@@ -79,7 +79,7 @@ export default function App() {
                 <ListItem button onClick={() => nav('/submit')}>
                   <ListItemText>Submit</ListItemText>
                 </ListItem>
-                <ListItem button onClick={() => nav('/dashboard')}>
+                <ListItem button onClick={() => nav('/dashboard/claims?page=0&pageSize=20')}>
                   <ListItemText>Dashboard</ListItemText>
                 </ListItem>
                 <ListItem button onClick={() => nav('/airflow')}>
