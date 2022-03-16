@@ -225,7 +225,7 @@ const Submit = () => {
     <div>
       <Box sx={{ paddingBottom: 3 }}>
         <Typography variant='h6' component='h2'>
-          Billing Submission
+          Billing Tool 
         </Typography>
         <Typography variant='p' component='p'>
           Manual claims will be run via Airflow service
