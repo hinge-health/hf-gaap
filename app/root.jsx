@@ -82,6 +82,9 @@ export default function App() {
                 <ListItem button onClick={() => nav('/dashboard')}>
                   <ListItemText>Dashboard</ListItemText>
                 </ListItem>
+                <ListItem button onClick={() => nav('/airflow')}>
+                  <ListItemText>Airflow</ListItemText>
+                </ListItem>
               </List>
             </Drawer>
             <Box
