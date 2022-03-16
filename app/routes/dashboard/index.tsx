@@ -7,7 +7,7 @@ import {
   Typography,
   Box
 } from '@mui/material';
-import { json, useLoaderData } from 'remix';
+import { json, Link, useLoaderData } from 'remix';
 
 export const loader = async () => {
   // TODO: Fetch our actual data or mock with actual shape...
@@ -39,12 +39,16 @@ const Dashboard = () => {
           <TableHead>
             <TableRow>
               <TableCell>Amount</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data.invoices.map(c => (
               <TableRow key={c.id}>
                 <TableCell>{c.amount}</TableCell>
+                <TableCell>
+                  <Link to={`invoice/${c.id}`}>Details</Link>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -58,12 +62,16 @@ const Dashboard = () => {
           <TableHead>
             <TableRow>
               <TableCell>Amount</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data.claims.map(c => (
               <TableRow key={c.id}>
                 <TableCell>{c.amount}</TableCell>
+                <TableCell>
+                  <Link to={`claim/${c.id}`}>Details</Link>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
