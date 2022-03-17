@@ -1,6 +1,7 @@
 import { json, useLoaderData } from 'remix';
 import { Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import columns, { rows } from './colsHeaders';
 
 export const loader = async () => {
   return json([
@@ -31,72 +32,9 @@ export const loader = async () => {
  *  totals: string;
  * }
  */
-const columns = [
-  { field: 'id', headerName: 'ID', width: 90 },
-  {
-    field: 'taskId',
-    headerName: 'Task Id',
-    type: 'number',
-    width: 150,
-    editable: true
-  },
-  {
-    field: 'dagId',
-    headerName: 'Dag Id',
-    type: 'number',
-    width: 150,
-    editable: true
-  },
-  {
-    field: 'client',
-    headerName: 'Client',
-    width: 350,
-    editable: true
-  },
-  {
-    field: 'insurer',
-    headerName: 'Insurer',
-    width: 350,
-    editable: true
-  },
-  {
-    field: 'paid',
-    headerName: 'Paid',
-    width: 90,
-    type: 'boolean',
-    editable: false
-  },
-  {
-    field: 'totals',
-    headerName: 'Totals',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 200
-  }
-];
-
-const rows = [
-  {
-    id: 1,
-    taskId: 10,
-    dagId: 1,
-    client: 'Tom Nook',
-    insurer: 'Isabella Inc.',
-    paid: false,
-    totals: '$1,200,000'
-  },
-  {
-    id: 2,
-    taskId: 13,
-    dagId: 1,
-    client: 'Aurora',
-    insurer: 'Isabella Inc.',
-    paid: true,
-    totals: '$1,200,000'
-  }
-];
 
 const Airflow = () => {
+  const title = 'Airflow Overview';
   // data
   const airflowData = useLoaderData();
   console.log(airflowData);
@@ -110,7 +48,7 @@ const Airflow = () => {
           padding: '2rem'
         }}
       >
-        Aiflow Page
+        {title}
       </Typography>
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
