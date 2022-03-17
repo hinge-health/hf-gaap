@@ -22,23 +22,37 @@ export const loader = async () => {
   ]);
 };
 
-const Airflow = () => {
-  const title = 'Airflow Overview';
+const BillingResults = () => {
+  const title = 'Billing Results Overview';
+  const summary =
+    'Overview of pulling data from Airflow. Perhaps some instructions can go here.';
+
   // data
   const airflowData = useLoaderData();
   console.log(airflowData);
 
   return (
     <>
-      <Typography
-        variant='h2'
-        sx={{
-          textAlign: 'center',
-          padding: '2rem'
-        }}
-      >
-        {title}
-      </Typography>
+      <div style={{ textAlign: 'center' }}>
+        <Typography
+          variant='h2'
+          sx={{
+            padding: '1rem'
+          }}
+        >
+          {title}
+        </Typography>
+
+        <Typography
+          variant='subtitle1'
+          sx={{
+            paddingBottom: '2rem'
+          }}
+        >
+          {summary}
+        </Typography>
+      </div>
+
       <div style={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={rows}
@@ -52,4 +66,4 @@ const Airflow = () => {
   );
 };
 
-export default Airflow;
+export default BillingResults;
