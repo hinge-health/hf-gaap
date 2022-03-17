@@ -100,7 +100,7 @@ export default function App() {
                   </ListItem>
                   <ListItem
                     button
-                    onClick={() => nav('/dashboard/claims?page=0&pageSize=20')}
+                    onClick={() => nav('/dashboard?type=invoice&page=0&pageSize=20')}
                   >
                     <ListItemText>Dashboard</ListItemText>
                   </ListItem>
