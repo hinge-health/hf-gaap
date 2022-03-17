@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
-import { useSocket } from '~/context';
+import { useInterval } from '~/useInterval';
+import { api } from '~/api';
 
 import { json, useLoaderData } from 'remix';
 import { Typography, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { columns, rows } from './colsHeaders';
+
+const POLLING_FREQ_MS = 5000;
 
 export const loader = async () => {
   return json([
@@ -30,16 +33,15 @@ const BillingResults = () => {
   const summary =
     'Overview of pulling data from Airflow. Perhaps some instructions can go here.';
 
-  const socket = useSocket();
+  useInterval(async () => {
+    const dagRunReq = await api('api/v0/submissions/generate_bills/1');
+    const dagRunData = await dagRunReq.json();
+    console.log('polling');
+    console.log(dagRunData);
 
-  useEffect(() => {
-    if (!socket) return;
-    console.log(socket);
-    socket.onmessage = (message) => {
-      console.log(message);
-    };
-
-  }, [socket]);
+    // we'll need to store the dag run in state and update the corresponding dag run
+    // in state with the response data from this poller
+  }, POLLING_FREQ_MS);
   // data
   const airflowData = useLoaderData();
   console.log(airflowData);
@@ -55,9 +57,6 @@ const BillingResults = () => {
         >
           {title}
         </Typography>
-        <Button onClick={() => { socket.send('ping!'); }}>
-          Websocket test
-        </Button>
         <Typography
           variant='subtitle1'
           sx={{
