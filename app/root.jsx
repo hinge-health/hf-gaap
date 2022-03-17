@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { SocketProvider } from './context';
-import { w3cwebsocket as W3CWebSocket } from "websocket";
 import {
   AppBar,
   Box,
@@ -37,7 +36,7 @@ export default function App() {
   const [socket, setSocket] = useState();
 
   useEffect(() => {
-    const socket = new W3CWebSocket('ws://localhost:8080');
+    const socket = new WebSocket('ws://localhost:8080');
     setSocket(socket);
 
     return () => {

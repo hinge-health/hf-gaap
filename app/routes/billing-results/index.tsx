@@ -34,12 +34,11 @@ const BillingResults = () => {
 
   useEffect(() => {
     if (!socket) return;
+    console.log(socket);
+    socket.onmessage = (message) => {
+      console.log(message);
+    };
 
-    socket.on('event', data => {
-      console.log(data);
-    });
-
-    socket.emit('event', 'ping');
   }, [socket]);
   // data
   const airflowData = useLoaderData();
@@ -56,7 +55,7 @@ const BillingResults = () => {
         >
           {title}
         </Typography>
-        <Button onClick={() => socket?.emit('event', 'ping')}>
+        <Button onClick={() => { socket.send('ping!'); }}>
           Websocket test
         </Button>
         <Typography
