@@ -12,7 +12,6 @@ import {
   ListItemText
 } from '@mui/material';
 import {
-  Link,
   Links,
   LiveReload,
   Meta,
@@ -79,11 +78,14 @@ export default function App() {
                 <ListItem button onClick={() => nav('/billing-tool')}>
                   <ListItemText>Billing Tool</ListItemText>
                 </ListItem>
-                <ListItem button onClick={() => nav('/airflow')}>
-                  <ListItemText>Billing Results</ListItemText>
-                </ListItem>
-                <ListItem button onClick={() => nav('/dashboard/claims?page=0&pageSize=20')}>
+                <ListItem
+                  button
+                  onClick={() => nav('/dashboard/claims?page=0&pageSize=20')}
+                >
                   <ListItemText>Dashboard</ListItemText>
+                </ListItem>
+                <ListItem button onClick={() => nav('/billing-results')}>
+                  <ListItemText>Billing Results</ListItemText>
                 </ListItem>
               </List>
             </Drawer>
