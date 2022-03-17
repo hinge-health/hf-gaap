@@ -34,13 +34,23 @@ const drawerWidth = 240;
 export default function App() {
   const nav = useNavigate();
   const [socket, setSocket] = useState();
+  const [interval, createInterval] = useState();
 
   useEffect(() => {
-    const socket = new WebSocket('ws://localhost:8080');
+    const socket = new WebSocket('ws://127.0.0.1:8080/api/v0/ws');
     setSocket(socket);
-
+    createInterval(setInterval(() => socket.send('echo'), 10000));
+    socket.onerror = (error) => {
+      console.log('fuck uyou');
+      console.log(error.message);
+    }
+    socket.onclose = (data) => {
+      console.log('closing');
+      console.log(data);
+    }
     return () => {
       socket.close();
+      clearInterval(interval);
     };
   }, []);
 
