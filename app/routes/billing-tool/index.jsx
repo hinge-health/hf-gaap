@@ -44,7 +44,7 @@ export const action = async ({
 
   console.log(newDagPayload);
 
-  const newDag = await api(`api/v0/airflow/${DAG_ID}`, {
+  const newDag = await api(`api/v0/submissions/submit/${DAG_ID}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
