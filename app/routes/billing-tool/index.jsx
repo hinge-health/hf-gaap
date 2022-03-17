@@ -14,119 +14,41 @@ import {
 } from '@mui/material';
 import DatePicker from '@mui/lab/DatePicker';
 
-import { json, useLoaderData } from 'remix';
+import { json, useLoaderData, Form } from 'remix';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
+import { api, dagApi } from '~/api';
+
+const DAG_ID = "generate_bills";
+
 export const loader = async () => {
+  const partnershipsReq = await api('api/v0/entities/partnerships', {
+    method: 'GET'
+  });
+  const clientsReq = await api('api/v0/entities/clients', {
+    method: 'GET'
+  });
+  const insurersReq = await api('api/v0/entities/insurers', {
+    method: 'GET'
+  });
+
+  const dagTest = await dagApi('api/v1/dags/generate_bills', {
+    method: 'GET'
+  });
+  console.log(dagTest);
+
+  console.log(await dagTest.json());
+
+  const partnerships = await partnershipsReq.json();
+  const clients = await clientsReq.json();
+  const insurers = await insurersReq.json();
+
   return json({
     modes: ['preview', 'submisison'],
-    partnerships: [
-      {
-        "id": 1,
-        "name": "HCSC"
-      },
-      {
-        "id": 2,
-        "name": "CVS"
-      },
-      {
-        "id": 3,
-        "name": "Aetna"
-      },
-      {
-        "id": 7,
-        "name": "BCBSAL"
-      },
-      {
-        "id": 9,
-        "name": "BCBSMA"
-      },
-      {
-        "id": 10,
-        "name": "UnitedHealthcare"
-      },
-      {
-        "id": 13,
-        "name": "HealthNow"
-      },
-      {
-        "id": 12,
-        "name": "Meritain"
-      },
-      {
-        "id": 14,
-        "name": "SurgeryPlus"
-      },
-      {
-        "id": 4,
-        "name": "Welltok"
-      },
-      {
-        "id": 5,
-        "name": "Castlight"
-      },
-      {
-        "id": 6,
-        "name": "Virgin Pulse"
-      },
-      {
-        "id": 11,
-        "name": "Evive"
-      },
-      {
-        "id": 15,
-        "name": "Anthem"
-      },
-      {
-        "id": 17,
-        "name": "ESI"
-      },
-      {
-        "id": 18,
-        "name": "Carrum"
-      },
-      {
-        "id": 19,
-        "name": "BCBSMN"
-      },
-      {
-        "id": 20,
-        "name": "Mercer HTC"
-      },
-      {
-        "id": 21,
-        "name": "Employer Health Network (EHN)"
-      },
-      {
-        "id": 23,
-        "name": "Trustmark"
-      },
-      {
-        "id": 24,
-        "name": "BCBSAZ"
-      },
-      {
-        "id": 25,
-        "name": "Accolade"
-      },
-      {
-        "id": 16,
-        "name": "Cambia"
-      }
-    ],
-    clients: [
-      { id: 1, name: 'Post' },
-      { id: 2, name: 'Amazon' },
-      { id: 3, name: 'UPS' }
-    ],
-    insurers: [
-      { id: 1, name: 'Cigna' },
-      { id: 2, name: 'UMR' },
-      { id: 3, name: 'Aetna' },
-      { id: 4, name: 'UnitedHealthcare' },
-      { id: 5, name: 'Fidelity' },
-    ],
+    partnerships,
+    clients,
+    insurers,
     billingTypes: [
       {
         id: 1,
@@ -175,37 +97,22 @@ function BillingCycle({ mode }) {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      {mode === 'preview' ? [...Array(3).keys()].map(i => {
-        return (
-          <DatePicker
-            key={i}
-            required={i === 0}
-            label="Billing Cycle"
-            value={value}
-            onChange={(newValue) => {
-              setValue(newValue);
-            }}
-            renderInput={(params) => <TextField {...params} />}
-          />);
-      })
-        :
-        <DatePicker
-          required
-          label="Billing Cycle"
-          value={value}
-          onChange={(newValue) => {
-            setValue(newValue);
-          }}
-          renderInput={(params) => <TextField {...params} />}
-        />
-      }
+      <DatePicker
+        label="Billing Cycle"
+        value={value}
+        onChange={(newValue) => {
+          setValue(newValue);
+        }}
+        renderInput={(params) => <TextField required {...params} />}
+      />
     </LocalizationProvider>
   );
 }
 
 
-const Submit = () => {
+const BillingTool = () => {
   const data = useLoaderData();
+
   const [mode, setMode] = useState('preview');
   const handleModeChange = (ev) => {
     setMode(ev.target.value);
@@ -225,7 +132,7 @@ const Submit = () => {
     <div>
       <Box sx={{ paddingBottom: 3 }}>
         <Typography variant='h6' component='h2'>
-          Billing Tool 
+          Billing Tool
         </Typography>
         <Typography variant='p' component='p'>
           Manual claims will be run via Airflow service
@@ -314,4 +221,4 @@ const Submit = () => {
   )
 };
 
-export default Submit;
+export default BillingTool;
