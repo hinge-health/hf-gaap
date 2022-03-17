@@ -47,9 +47,6 @@ const BillingResults = () => {
 
   return (
     <>
-      <Button onClick={() => socket?.emit('event', 'ping')}>
-        Websocket test
-      </Button>
       <div style={{ textAlign: 'center' }}>
         <Typography
           variant='h2'
@@ -59,7 +56,9 @@ const BillingResults = () => {
         >
           {title}
         </Typography>
-
+        <Button onClick={() => socket?.emit('event', 'ping')}>
+          Websocket test
+        </Button>
         <Typography
           variant='subtitle1'
           sx={{
