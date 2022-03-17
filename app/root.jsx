@@ -36,7 +36,7 @@ export default function App() {
   const [socket, setSocket] = useState();
 
   useEffect(() => {
-    const socket = io();
+    const socket = io('ws://localhost:8080');
     setSocket(socket);
     return () => {
       socket.close();
