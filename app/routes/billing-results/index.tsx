@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSocket } from '~/context';
 
 import { json, useLoaderData } from 'remix';
 import { Typography, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { columns, rows } from './colsHeaders';
+import ErrorMessage from './errorMessage';
 
 export const loader = async () => {
   return json([
@@ -30,21 +31,33 @@ const BillingResults = () => {
   const summary =
     'Overview of pulling data from Airflow. Perhaps some instructions can go here.';
 
+  const [error, setError] = useState<null | Error>(null);
+
   const socket = useSocket();
 
   useEffect(() => {
     if (!socket) return;
+
+    if (socket.onerror) setError(socket.onerror);
+
     console.log(socket);
-    socket.onmessage = (message) => {
+    socket.onmessage = message => {
       console.log(message);
     };
-
   }, [socket]);
+
   // data
   const airflowData = useLoaderData();
   console.log(airflowData);
 
-  return (
+  const handleErrorTest = () => {
+    const err = new Error('Error test!');
+    setError(err);
+  };
+
+  return error ? (
+    ErrorMessage(error)
+  ) : (
     <>
       <div style={{ textAlign: 'center' }}>
         <Typography
@@ -55,8 +68,21 @@ const BillingResults = () => {
         >
           {title}
         </Typography>
-        <Button onClick={() => { socket.send('ping!'); }}>
+        <Button
+          onClick={() => {
+            socket.send('ping!');
+          }}
+        >
           Websocket test
+        </Button>
+
+        <Button
+          sx={{
+            color: 'red'
+          }}
+          onClick={handleErrorTest}
+        >
+          Error test
         </Button>
         <Typography
           variant='subtitle1'
@@ -68,13 +94,15 @@ const BillingResults = () => {
         </Typography>
       </div>
 
-      <div style={{ height: 400, width: '100%' }}>
+      <div style={{ height: '60rem', width: '100%' }}>
         <DataGrid
           rows={rows}
           columns={columns}
-          pageSize={5}
+          pageSize={25}
           checkboxSelection
           disableSelectionOnClick
+          // not sure what this will do but the docs state: "An error that will turn the grid into its error state and display the error component."
+          error={error}
         />
       </div>
     </>

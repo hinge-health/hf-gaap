@@ -4,14 +4,14 @@ import generateLink, { isSuccessful } from './lib';
 interface Row {
   id: number;
   taskId: number;
-  dagId: number;
-  client: string;
-  insurer: string;
+  dagId: string;
+  jobName: string;
   status: string;
-  totals: string;
+  totals: number;
   executionDate: string;
+  billingCycle: string;
   success: boolean;
-  logs: any;
+  logs: any; // url
 }
 
 const columns: Array<GridColDef> = [
@@ -27,46 +27,50 @@ const columns: Array<GridColDef> = [
     field: 'dagId',
     headerName: 'Dag Id',
     type: 'number',
-    width: 90,
+    width: 200,
     editable: true,
     description: `Airflow's dagId`
   },
   {
-    field: 'client',
-    headerName: 'Client',
-    width: 300,
+    field: 'jobName',
+    headerName: 'Job Name',
+    width: 200,
     editable: true
   },
-  {
-    field: 'insurer',
-    headerName: 'Insurer',
-    width: 300,
-    editable: true
-  },
+
   {
     field: 'status',
     headerName: 'Status',
     width: 120,
-    editable: true
+    description: `transaction status to either be 'in progress' or 'completed'`
   },
   {
     field: 'totals',
     headerName: 'Totals',
-    description: 'This column has a value getter and is not sortable.',
     sortable: false,
-    width: 150
+    type: 'number',
+    width: 150,
+    valueFormatter: params => {
+      return params.value.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      });
+    }
   },
   {
     field: 'executionDate',
     headerName: 'Execution Date',
-    description: 'This column has a value getter and is not sortable.',
     type: 'dateTime',
+    width: 250
+  },
+  {
+    field: 'billingCycle',
+    headerName: 'Billing Cycle',
     width: 150
   },
   {
     field: 'success',
     headerName: 'Success',
-    description: 'This column has a value getter and is not sortable.',
     type: 'boolean',
     editable: true,
     width: 90
@@ -74,7 +78,6 @@ const columns: Array<GridColDef> = [
   {
     field: 'logs',
     headerName: 'Logs',
-    description: 'This column has a value getter and is not sortable.',
     sortable: false,
     width: 300,
     renderCell: param => generateLink(param)
@@ -85,23 +88,95 @@ const rows: Array<Row> = [
   {
     id: 1,
     taskId: 10,
-    dagId: 1,
-    client: 'Tom Nook',
-    insurer: 'Isabella Inc.',
+    dagId: 'fake_paddington_bear_invoices',
+    jobName: 'descriptive_job_name',
     status: 'in progress',
-    totals: '$1,200,000',
+    totals: 1200000,
     executionDate: '3/16/2022, 2:43:22 AM',
+    billingCycle: '2022-03-16',
     success: isSuccessful('total'),
     logs: 'islandhomeparadise@scam.com'
   },
   {
     id: 2,
     taskId: 13,
-    dagId: 1,
-    client: 'Aurora',
-    insurer: 'Isabella Inc.',
+    dagId: 'fake_collection_cvs',
+    jobName: 'descriptive_job_name',
     status: 'complete',
-    totals: '$1,200,000',
+    totals: 1200000,
+    billingCycle: '2022-03-16',
+    executionDate: '3/16/2022, 2:43:22 AM',
+    success: isSuccessful('total'),
+    logs: 'placeholder@here.com'
+  },
+  {
+    id: 3,
+    taskId: 13,
+    dagId: 'fake_collection_cvs',
+    jobName: 'descriptive_job_name',
+    status: 'in progress',
+    totals: 1500000,
+    billingCycle: '2022-03-16',
+    executionDate: '3/16/2022, 2:43:22 AM',
+    success: isSuccessful('total'),
+    logs: 'placeholder@here.com'
+  },
+  {
+    id: 4,
+    taskId: 13,
+    dagId: 'fake_collection_cvs',
+    jobName: 'descriptive_job_name',
+    status: 'complete',
+    totals: 12000,
+    billingCycle: '2022-03-16',
+    executionDate: '2/16/2022, 2:43:22 AM',
+    success: isSuccessful('total'),
+    logs: 'placeholder@here.com'
+  },
+  {
+    id: 5,
+    taskId: 13,
+    dagId: 'fake_collection_cvs',
+    jobName: 'descriptive_job_name',
+    status: 'complete',
+    totals: 20000,
+    billingCycle: '2022-03-16',
+    executionDate: '3/16/2022, 2:43:22 AM',
+    success: isSuccessful('total'),
+    logs: 'placeholder@here.com'
+  },
+  {
+    id: 6,
+    taskId: 13,
+    dagId: 'fake_collection_cvs',
+    jobName: 'descriptive_job_name',
+    status: 'complete',
+    totals: 19000,
+    billingCycle: '2022-03-16',
+    executionDate: '3/16/2022, 2:43:22 AM',
+    success: isSuccessful('total'),
+    logs: 'placeholder@here.com'
+  },
+  {
+    id: 7,
+    taskId: 13,
+    dagId: 'fake_collection_cvs',
+    jobName: 'descriptive_job_name',
+    status: 'complete',
+    totals: 1200000,
+    billingCycle: '2022-03-16',
+    executionDate: '2/16/2022, 2:43:22 AM',
+    success: isSuccessful('total'),
+    logs: 'placeholder@here.com'
+  },
+  {
+    id: 8,
+    taskId: 13,
+    dagId: 'fake_collection_cvs',
+    jobName: 'descriptive_job_name',
+    status: 'complete',
+    totals: 1200000,
+    billingCycle: '2022-03-16',
     executionDate: '3/16/2022, 2:43:22 AM',
     success: isSuccessful('total'),
     logs: 'placeholder@here.com'
