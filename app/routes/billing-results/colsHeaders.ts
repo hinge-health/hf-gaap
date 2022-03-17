@@ -5,13 +5,12 @@ interface Row {
   id: number;
   taskId: number;
   dagId: number;
-  client: string;
-  insurer: string;
+  jobName: string;
   status: string;
-  totals: string;
+  totals: number;
   executionDate: string;
   success: boolean;
-  logs: any;
+  logs: any; // url
 }
 
 const columns: Array<GridColDef> = [
@@ -32,41 +31,40 @@ const columns: Array<GridColDef> = [
     description: `Airflow's dagId`
   },
   {
-    field: 'client',
-    headerName: 'Client',
-    width: 300,
+    field: 'jobName',
+    headerName: 'Job Name',
+    width: 350,
     editable: true
   },
-  {
-    field: 'insurer',
-    headerName: 'Insurer',
-    width: 300,
-    editable: true
-  },
+
   {
     field: 'status',
     headerName: 'Status',
     width: 120,
-    editable: true
+    description: `transaction status to either be 'in progress' or 'completed'`
   },
   {
     field: 'totals',
     headerName: 'Totals',
-    description: 'This column has a value getter and is not sortable.',
     sortable: false,
-    width: 150
+    type: 'number',
+    width: 150,
+    valueFormatter: params => {
+      return params.value.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      });
+    }
   },
   {
     field: 'executionDate',
     headerName: 'Execution Date',
-    description: 'This column has a value getter and is not sortable.',
     type: 'dateTime',
-    width: 150
+    width: 250
   },
   {
     field: 'success',
     headerName: 'Success',
-    description: 'This column has a value getter and is not sortable.',
     type: 'boolean',
     editable: true,
     width: 90
@@ -74,7 +72,6 @@ const columns: Array<GridColDef> = [
   {
     field: 'logs',
     headerName: 'Logs',
-    description: 'This column has a value getter and is not sortable.',
     sortable: false,
     width: 300,
     renderCell: param => generateLink(param)
@@ -86,10 +83,9 @@ const rows: Array<Row> = [
     id: 1,
     taskId: 10,
     dagId: 1,
-    client: 'Tom Nook',
-    insurer: 'Isabella Inc.',
+    jobName: 'Tom Nook',
     status: 'in progress',
-    totals: '$1,200,000',
+    totals: 1200000,
     executionDate: '3/16/2022, 2:43:22 AM',
     success: isSuccessful('total'),
     logs: 'islandhomeparadise@scam.com'
@@ -98,10 +94,9 @@ const rows: Array<Row> = [
     id: 2,
     taskId: 13,
     dagId: 1,
-    client: 'Aurora',
-    insurer: 'Isabella Inc.',
+    jobName: 'Aurora',
     status: 'complete',
-    totals: '$1,200,000',
+    totals: 1200000,
     executionDate: '3/16/2022, 2:43:22 AM',
     success: isSuccessful('total'),
     logs: 'placeholder@here.com'
