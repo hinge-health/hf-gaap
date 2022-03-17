@@ -57,19 +57,23 @@ export const action = async ({
 };
 
 export const loader = async () => {
-  const partnershipsReq = await api('api/v0/entities/partnerships', {
-    method: 'GET'
-  });
-  const clientsReq = await api('api/v0/entities/clients', {
-    method: 'GET'
-  });
-  const insurersReq = await api('api/v0/entities/insurers', {
-    method: 'GET'
-  });
+  const [partnershipsReq, clientsReq, insurersReq] = await Promise.all([
+    api('api/v0/entities/partnerships', {
+      method: 'GET'
+    }),
+    api('api/v0/entities/clients', {
+      method: 'GET'
+    }),
+    api('api/v0/entities/insurers', {
+      method: 'GET'
+    })
+  ]);
 
-  const partnerships = await partnershipsReq.json();
-  const clients = await clientsReq.json();
-  const insurers = await insurersReq.json();
+  const [partnerships, clients, insurers] = await Promise.all([
+    partnershipsReq.json(),
+    clientsReq.json(),
+    insurersReq.json()
+  ]);
 
   return json({
     modes: ['preview', 'submisison'],
@@ -192,7 +196,7 @@ const BillingTool = () => {
             <CustomAutoComplete options={data.partnerships} name="partnership" fieldLabel="Choose a partnership" formId="partnership-select" />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <CustomAutoComplete options={data.clients} valueField='identifier'  name="client" fieldLabel="Choose a client" formId="client-select" />
+            <CustomAutoComplete options={data.clients} valueField='identifier' name="client" fieldLabel="Choose a client" formId="client-select" />
           </Grid>
           <Grid item xs={12} sm={12}>
             <CustomAutoComplete options={data.insurers} valueField='id' name="insurer" fieldLabel="Choose an insurer" formId="insurer-select" />

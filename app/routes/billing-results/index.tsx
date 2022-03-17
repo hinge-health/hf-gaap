@@ -1,5 +1,8 @@
+import { useEffect } from 'react';
+import { useSocket } from '~/context';
+
 import { json, useLoaderData } from 'remix';
-import { Typography } from '@mui/material';
+import { Typography, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { columns, rows } from './colsHeaders';
 
@@ -27,6 +30,17 @@ const BillingResults = () => {
   const summary =
     'Overview of pulling data from Airflow. Perhaps some instructions can go here.';
 
+  const socket = useSocket();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on('event', data => {
+      console.log(data);
+    });
+
+    socket.emit('event', 'ping');
+  }, [socket]);
   // data
   const airflowData = useLoaderData();
   console.log(airflowData);
@@ -42,7 +56,9 @@ const BillingResults = () => {
         >
           {title}
         </Typography>
-
+        <Button onClick={() => socket?.emit('event', 'ping')}>
+          Websocket test
+        </Button>
         <Typography
           variant='subtitle1'
           sx={{
