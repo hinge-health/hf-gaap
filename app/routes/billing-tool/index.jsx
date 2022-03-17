@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import DatePicker from '@mui/lab/DatePicker';
 
-import { json, useLoaderData, useTransition, Form } from 'remix';
+import { json, useLoaderData, useTransition, Form, redirect } from 'remix';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
@@ -26,11 +26,11 @@ function formatDagPayload(data) {
   return {
     billing_cycle: data.billingCycle,
     mode: data.mode,
-    billingType: data.billingType,
     limit: parseInt(data.claimsLimit, 10),
     insurer_id: parseInt(data.insurer, 10),
     client: data.client,
-    partnership: data.partnership
+    partnership: data.partnership,
+    billing_type: data.billingType
   };
 }
 
@@ -44,7 +44,7 @@ export const action = async ({
 
   console.log(newDagPayload);
 
-  const newDag = await api(`api/v0/airflow/${DAG_ID}`, {
+  const newDag = await api(`api/v0/submissions/submit/${DAG_ID}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -53,7 +53,7 @@ export const action = async ({
   });
   console.log(await newDag.json());
   // change return value to redirect location
-  return '/billing-tool';
+  return redirect('/billing-results');
 };
 
 export const loader = async () => {
@@ -76,7 +76,7 @@ export const loader = async () => {
   ]);
 
   return json({
-    modes: ['preview', 'submisison'],
+    modes: ['preview', 'submission'],
     partnerships,
     clients,
     insurers,
@@ -202,34 +202,17 @@ const BillingTool = () => {
             <CustomAutoComplete options={data.insurers} valueField='id' name="insurer" fieldLabel="Choose an insurer" formId="insurer-select" />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <FormControl required fullWidth>
-              <InputLabel>Billing Type</InputLabel>
-              <Select
-                labelId="billing-select-label"
-                id="billing-select"
-                value={formState.billingType}
-                name="billingType"
-                label="Billing Type"
-                onChange={handleInputChange}
-              >
-                {data.billingTypes.map(m =>
-                  <MenuItem key={m.id} value={m.name}>{m.name}</MenuItem>
-                )}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={12}>
             <BillingCycle mode={formState.mode} />
           </Grid>
           <Grid item xs={12} sm={12}>
             <FormControl fullWidth>
-              <InputLabel>Claim Type</InputLabel>
+              <InputLabel>Billing Type</InputLabel>
               <Select
                 labelId="claim-select-label"
                 id="claim-select"
-                name="claimType"
-                value={formState.claimType}
-                label="Claim Type"
+                name="billingType"
+                value={formState.billingType}
+                label="Billing Type"
                 onChange={handleInputChange}
               >
                 {data.claimTypes.map(m =>
