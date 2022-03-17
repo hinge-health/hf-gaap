@@ -46,7 +46,7 @@ const columns: Array<GridColDef> = [
   {
     field: 'status',
     headerName: 'Status',
-    width: 90,
+    width: 120,
     editable: true
   },
   {
@@ -81,7 +81,7 @@ const columns: Array<GridColDef> = [
   }
 ];
 
-export const rows: Array<Row> = [
+const rows: Array<Row> = [
   {
     id: 1,
     taskId: 10,
@@ -108,4 +108,4 @@ export const rows: Array<Row> = [
   }
 ];
 
-export default columns;
+export { columns, rows };

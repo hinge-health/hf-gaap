@@ -1,7 +1,7 @@
 import { json, useLoaderData } from 'remix';
 import { Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import columns, { rows } from './colsHeaders';
+import { columns, rows } from './colsHeaders';
 
 export const loader = async () => {
   return json([
@@ -21,17 +21,6 @@ export const loader = async () => {
     }
   ]);
 };
-
-/**
- * interface AirflowData {
- *  taskId: number;
- *  dagId: number;
- *  client: string;
- *  insurer: string;
- *  paid: boolean;
- *  totals: string;
- * }
- */
 
 const Airflow = () => {
   const title = 'Airflow Overview';
