@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { SocketProvider } from './context';
 import {
   AppBar,
   Box,
@@ -15,10 +17,10 @@ import {
   Links,
   LiveReload,
   Meta,
-  Outlet,
   Scripts,
   ScrollRestoration,
-  useNavigate
+  useNavigate,
+  Outlet
 } from 'remix';
 import { theme } from './theme';
 
@@ -28,8 +30,27 @@ export function meta() {
 
 const drawerWidth = 240;
 
+
 export default function App() {
   const nav = useNavigate();
+  const [socket, setSocket] = useState();
+
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:8080');
+    setSocket(socket);
+
+    return () => {
+      socket.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.onopen = (data) => {
+      console.log('websocket client established');
+      console.log(data);
+    };
+  }, [socket]);
 
   return (
     <html lang='en'>
@@ -45,59 +66,61 @@ export default function App() {
       </head>
       <body>
         <CssBaseline />
-        <ThemeProvider theme={theme}>
-          <Box sx={{ display: 'flex' }}>
-            <AppBar
-              position='fixed'
-              sx={{
-                width: `calc(100% - ${drawerWidth}px)`,
-                ml: `${drawerWidth}px`
-              }}
-            >
-              <Toolbar>
-                <Typography variant='h6' component='h1' noWrap>
-                  GAAP
-                </Typography>
-              </Toolbar>
-            </AppBar>
-            <Drawer
-              sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                '& .MuiDrawer-paper': {
+        <SocketProvider socket={socket}>
+          <ThemeProvider theme={theme}>
+            <Box sx={{ display: 'flex' }}>
+              <AppBar
+                position='fixed'
+                sx={{
+                  width: `calc(100% - ${drawerWidth}px)`,
+                  ml: `${drawerWidth}px`
+                }}
+              >
+                <Toolbar>
+                  <Typography variant='h6' component='h1' noWrap>
+                    GAAP
+                  </Typography>
+                </Toolbar>
+              </AppBar>
+              <Drawer
+                sx={{
                   width: drawerWidth,
-                  boxSizing: 'border-box'
-                }
-              }}
-              variant='permanent'
-              anchor='left'
-            >
-              <Toolbar />
-              <Divider />
-              <List>
-                <ListItem button onClick={() => nav('/billing-tool')}>
-                  <ListItemText>Billing Tool</ListItemText>
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={() => nav('/dashboard/claims?page=0&pageSize=20')}
-                >
-                  <ListItemText>Dashboard</ListItemText>
-                </ListItem>
-                <ListItem button onClick={() => nav('/billing-results')}>
-                  <ListItemText>Billing Results</ListItemText>
-                </ListItem>
-              </List>
-            </Drawer>
-            <Box
-              component='main'
-              sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
-            >
-              <Toolbar />
-              <Outlet />
+                  flexShrink: 0,
+                  '& .MuiDrawer-paper': {
+                    width: drawerWidth,
+                    boxSizing: 'border-box'
+                  }
+                }}
+                variant='permanent'
+                anchor='left'
+              >
+                <Toolbar />
+                <Divider />
+                <List>
+                  <ListItem button onClick={() => nav('/billing-tool')}>
+                    <ListItemText>Billing Tool</ListItemText>
+                  </ListItem>
+                  <ListItem
+                    button
+                    onClick={() => nav('/dashboard/claims?page=0&pageSize=20')}
+                  >
+                    <ListItemText>Dashboard</ListItemText>
+                  </ListItem>
+                  <ListItem button onClick={() => nav('/billing-results')}>
+                    <ListItemText>Billing Results</ListItemText>
+                  </ListItem>
+                </List>
+              </Drawer>
+              <Box
+                component='main'
+                sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+              >
+                <Toolbar />
+                <Outlet />
+              </Box>
             </Box>
-          </Box>
-        </ThemeProvider>
+          </ThemeProvider>
+        </SocketProvider>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
