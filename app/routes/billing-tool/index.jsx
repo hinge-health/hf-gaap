@@ -26,11 +26,12 @@ function formatDagPayload(data) {
   return {
     billing_cycle: data.billingCycle,
     mode: data.mode,
-    billingType: data.billingType,
+    claim_type: data.claimType,
     limit: parseInt(data.claimsLimit, 10),
     insurer_id: parseInt(data.insurer, 10),
     client: data.client,
-    partnership: data.partnership
+    partnership: data.partnership,
+    billing_type: data.billingType
   };
 }
 
@@ -44,7 +45,7 @@ export const action = async ({
 
   console.log(newDagPayload);
 
-  const newDag = await api(`api/v0/airflow/${DAG_ID}`, {
+  const newDag = await api(`api/v0/submissions/submit/${DAG_ID}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -76,7 +77,7 @@ export const loader = async () => {
   ]);
 
   return json({
-    modes: ['preview', 'submisison'],
+    modes: ['preview', 'submission'],
     partnerships,
     clients,
     insurers,
