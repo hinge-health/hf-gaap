@@ -1,3 +1,6 @@
+import io from 'socket.io-client';
+import { SocketProvider } from './context';
+import { useState, useEffect } from 'react';
 import {
   AppBar,
   Box,
@@ -30,6 +33,22 @@ const drawerWidth = 240;
 
 export default function App() {
   const nav = useNavigate();
+  const [socket, setSocket] = useState();
+
+  useEffect(() => {
+    const socket = io();
+    setSocket(socket);
+    return () => {
+      socket.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on('confirmation', (data) => {
+      console.log(data);
+    });
+  }, [socket]);
 
   return (
     <html lang='en'>
