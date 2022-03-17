@@ -14,13 +14,47 @@ import {
 } from '@mui/material';
 import DatePicker from '@mui/lab/DatePicker';
 
-import { json, useLoaderData, Form } from 'remix';
+import { json, useLoaderData, useTransition, Form } from 'remix';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
 import { api, dagApi } from '~/api';
 
 const DAG_ID = "generate_bills";
+
+function formatDagPayload(data) {
+  return {
+    billing_cycle: data.billingCycle,
+    mode: data.mode,
+    billingType: data.billingType,
+    limit: parseInt(data.claimsLimit, 10),
+    insurer_id: parseInt(data.insurer, 10),
+    client: data.client,
+    partnership: data.partnership
+  };
+}
+
+// action that handles form submission
+export const action = async ({
+  request,
+}) => {
+  const formData = await request.formData();
+  const deserializedData = Object.fromEntries(formData)
+  const newDagPayload = formatDagPayload(deserializedData);
+
+  console.log(newDagPayload);
+
+  const newDag = await api(`api/v0/airflow/${DAG_ID}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(newDagPayload)
+  });
+  console.log(await newDag.json());
+  // change return value to redirect location
+  return '/billing-tool';
+};
 
 export const loader = async () => {
   const partnershipsReq = await api('api/v0/entities/partnerships', {
@@ -32,13 +66,6 @@ export const loader = async () => {
   const insurersReq = await api('api/v0/entities/insurers', {
     method: 'GET'
   });
-
-  const dagTest = await dagApi('api/v1/dags/generate_bills', {
-    method: 'GET'
-  });
-  console.log(dagTest);
-
-  console.log(await dagTest.json());
 
   const partnerships = await partnershipsReq.json();
   const clients = await clientsReq.json();
@@ -63,31 +90,37 @@ export const loader = async () => {
   });
 }
 
-function CustomAutoComplete({ options, formId, fieldLabel }) {
+function CustomAutoComplete({ name, options, formId, fieldLabel, valueField }) {
   return (
     <Autocomplete
+      autoHighlight
       id={formId}
       options={options}
-      autoHighlight
       getOptionLabel={(option) => {
-        return option.name
+        if (valueField) {
+          return option[valueField];
+        }
+        return option.name;
       }}
       renderOption={(props, option) => (
         <Box component="li" {...props}>
           {option.name}
         </Box>
       )}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          required
-          label={fieldLabel}
-          inputProps={{
-            ...params.inputProps,
-            autoComplete: 'new-password', // disable autocomplete and autofill
-          }}
-        />
-      )}
+      renderInput={(params) => {
+        return (
+          <TextField
+            {...params}
+            required
+            name={name}
+            label={fieldLabel}
+            inputProps={{
+              ...params.inputProps,
+              autoComplete: 'new-password', // disable autocomplete and autofill
+            }}
+          />
+        );
+      }}
     />
   );
 }
@@ -100,10 +133,11 @@ function BillingCycle({ mode }) {
       <DatePicker
         label="Billing Cycle"
         value={value}
+        inputFormat='yyyy-MM-dd'
         onChange={(newValue) => {
           setValue(newValue);
         }}
-        renderInput={(params) => <TextField required {...params} />}
+        renderInput={(params) => <TextField required name="billingCycle" {...params} />}
       />
     </LocalizationProvider>
   );
@@ -112,20 +146,16 @@ function BillingCycle({ mode }) {
 
 const BillingTool = () => {
   const data = useLoaderData();
+  const transition = useTransition();
+  const [formState, setFormState] = useState({
+    mode: 'preview'
+  });
 
-  const [mode, setMode] = useState('preview');
-  const handleModeChange = (ev) => {
-    setMode(ev.target.value);
-  }
-
-  const [billingType, setBillingType] = useState('');
-  const handleBillingTypeChange = (ev) => {
-    setBillingType(ev.target.value);
-  }
-
-  const [claimType, setClaimType] = useState('');
-  const handleClaimTypeChange = (ev) => {
-    setClaimType(ev.target.value);
+  const handleInputChange = (ev) => {
+    const { name, value } = ev.target;
+    setFormState({
+      [name]: value
+    });
   }
 
   return (
@@ -138,7 +168,7 @@ const BillingTool = () => {
           Manual claims will be run via Airflow service
         </Typography>
       </Box>
-      <form style={{ width: 800 }}>
+      <Form method="post" style={{ width: 800 }}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={12}>
             <FormControl required fullWidth>
@@ -146,9 +176,10 @@ const BillingTool = () => {
               <Select
                 labelId="mode-select-label"
                 id="mode-select"
-                value={mode}
+                name="mode"
+                value={formState.mode}
                 label="Mode"
-                onChange={handleModeChange}
+                onChange={handleInputChange}
               >
                 {data.modes.map(m =>
                   <MenuItem key={m} value={m}>{m}</MenuItem>
@@ -158,13 +189,13 @@ const BillingTool = () => {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={12}>
-            <CustomAutoComplete options={data.partnerships} fieldLabel="Choose a partnership" formId="partnership-select" />
+            <CustomAutoComplete options={data.partnerships} name="partnership" fieldLabel="Choose a partnership" formId="partnership-select" />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <CustomAutoComplete options={data.clients} fieldLabel="Choose a client" formId="client-select" />
+            <CustomAutoComplete options={data.clients} valueField='identifier'  name="client" fieldLabel="Choose a client" formId="client-select" />
           </Grid>
           <Grid item xs={12} sm={12}>
-            <CustomAutoComplete options={data.insurers} fieldLabel="Choose an insurer" formId="insurer-select" />
+            <CustomAutoComplete options={data.insurers} valueField='id' name="insurer" fieldLabel="Choose an insurer" formId="insurer-select" />
           </Grid>
           <Grid item xs={12} sm={12}>
             <FormControl required fullWidth>
@@ -172,9 +203,10 @@ const BillingTool = () => {
               <Select
                 labelId="billing-select-label"
                 id="billing-select"
-                value={billingType}
+                value={formState.billingType}
+                name="billingType"
                 label="Billing Type"
-                onChange={handleBillingTypeChange}
+                onChange={handleInputChange}
               >
                 {data.billingTypes.map(m =>
                   <MenuItem key={m.id} value={m.name}>{m.name}</MenuItem>
@@ -183,7 +215,7 @@ const BillingTool = () => {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={12}>
-            <BillingCycle mode={mode} />
+            <BillingCycle mode={formState.mode} />
           </Grid>
           <Grid item xs={12} sm={12}>
             <FormControl fullWidth>
@@ -191,9 +223,10 @@ const BillingTool = () => {
               <Select
                 labelId="claim-select-label"
                 id="claim-select"
-                value={claimType}
+                name="claimType"
+                value={formState.claimType}
                 label="Claim Type"
-                onChange={handleClaimTypeChange}
+                onChange={handleInputChange}
               >
                 {data.claimTypes.map(m =>
                   <MenuItem key={m} value={m}>{m}</MenuItem>
@@ -206,17 +239,18 @@ const BillingTool = () => {
               id="outlined-number"
               label="Claims Limit"
               type="number"
+              name="claimsLimit"
+              onChange={handleInputChange}
               InputLabelProps={{
                 shrink: true,
               }}
             />
           </Grid>
-          `
           <Grid item xs={12} sm={12} justifyContent='flex-end' alignItems='flex-end'>
-            <Button variant="contained">Run</Button>
+            <Button type='submit' variant='contained' disabled={transition.state === 'submitting'}>Run</Button>
           </Grid>
         </Grid>
-      </form>
+      </Form>
     </div>
   )
 };
