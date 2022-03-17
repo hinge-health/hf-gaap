@@ -1,6 +1,6 @@
-import io from 'socket.io-client';
 import { useState, useEffect } from 'react';
 import { SocketProvider } from './context';
+import { w3cwebsocket as W3CWebSocket } from "websocket";
 import {
   AppBar,
   Box,
@@ -31,13 +31,15 @@ export function meta() {
 
 const drawerWidth = 240;
 
+
 export default function App() {
   const nav = useNavigate();
   const [socket, setSocket] = useState();
 
   useEffect(() => {
-    const socket = io('ws://localhost:8080');
+    const socket = new W3CWebSocket('ws://localhost:8080');
     setSocket(socket);
+
     return () => {
       socket.close();
     };
@@ -45,9 +47,10 @@ export default function App() {
 
   useEffect(() => {
     if (!socket) return;
-    socket.on('confirmation', (data) => {
+    socket.onopen = (data) => {
+      console.log('websocket client established');
       console.log(data);
-    });
+    };
   }, [socket]);
 
   return (
