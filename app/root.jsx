@@ -76,14 +76,14 @@ export default function App() {
               <Toolbar />
               <Divider />
               <List>
-                <ListItem button onClick={() => nav('/submit')}>
-                  <ListItemText>Submit</ListItemText>
+                <ListItem button onClick={() => nav('/billing-tool')}>
+                  <ListItemText>Billing Tool</ListItemText>
+                </ListItem>
+                <ListItem button onClick={() => nav('/airflow')}>
+                  <ListItemText>Billing Results</ListItemText>
                 </ListItem>
                 <ListItem button onClick={() => nav('/dashboard/claims?page=0&pageSize=20')}>
                   <ListItemText>Dashboard</ListItemText>
-                </ListItem>
-                <ListItem button onClick={() => nav('/airflow')}>
-                  <ListItemText>Airflow</ListItemText>
                 </ListItem>
               </List>
             </Drawer>
