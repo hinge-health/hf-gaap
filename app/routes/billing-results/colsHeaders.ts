@@ -1,5 +1,5 @@
 import { GridColDef } from '@mui/x-data-grid';
-import generateLink, { isSuccessful } from './lib';
+import generateLink, { isSuccessful, generateSpreadLink } from './lib';
 
 interface Row {
   id: number;
@@ -13,6 +13,14 @@ interface Row {
   success: boolean;
   logs: any; // url
 }
+
+// //     report: {
+//   unmatched_users: 0,
+//   matched_users: 15,
+//   total_revenue: 14925,
+//   client_identifier: 'string',
+//   spreadsheet_link: 'https://docs.google.com/spreadsheets/d/'
+// }
 
 const columns: Array<GridColDef> = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -40,6 +48,40 @@ const columns: Array<GridColDef> = [
     description: `Airflow's dagId`
   },
   {
+    field: 'unmatched_users',
+    headerName: 'Unmatched Users',
+    width: 100,
+    renderCell: param => param.row.report ? param.row.report.unmatched_users : null
+  },
+  {
+    field: 'matched_users',
+    headerName: 'Matched Users',
+    // renderCell: param => param.row.report ? param.row.report.matched_users : null
+  },
+  {
+    field: 'total_revenue',
+    headerName: 'Totals',
+    sortable: false,
+    type: 'number',
+    width: 150,
+    // renderCell: param => param.row.report ? param.row.report.total_revenue : null
+
+    valueFormatter: params => {
+      if (params.value) {
+        return params.value.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD'
+        });
+      }
+
+    }
+  },
+  {
+    field: 'spreadsheet_link',
+    headerName: 'Spreadsheet',
+    renderCell: param => generateSpreadLink(param)
+  },
+  {
     field: 'partnership',
     headerName: 'Partnership',
     type: 'string',
@@ -52,19 +94,6 @@ const columns: Array<GridColDef> = [
     headerName: 'Status',
     width: 120,
     description: `transaction status to either be 'in progress' or 'completed'`
-  },
-  {
-    field: 'totals',
-    headerName: 'Totals',
-    sortable: false,
-    type: 'number',
-    width: 150,
-    // valueFormatter: params => {
-    //   return params.value.toLocaleString('en-US', {
-    //     style: 'currency',
-    //     currency: 'USD'
-    //   });
-    // }
   },
   {
     field: 'submissionDatetime',

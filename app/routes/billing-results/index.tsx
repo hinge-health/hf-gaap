@@ -11,12 +11,21 @@ import { Link } from '@mui/material';
 
 const POLLING_FREQ_MS = 5000;
 
+function processReport(data) {
+  return data.map(d => {
+    if (d.report) {
+      return {...d.report, ...d};
+    }
+    return d;
+  });
+}
+
 export const loader = async () => {
   const dagRunsReq = await api('api/v0/submissions', {
     method: 'GET'
   });
   const dagRuns = await dagRunsReq.json();
-  return dagRuns; 
+  return processReport(dagRuns); 
 };
 
 const BillingResults = () => {
