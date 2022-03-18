@@ -5,31 +5,22 @@ import { api } from '~/api';
 import { json, useLoaderData } from 'remix';
 import { Typography, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { columns, rows } from './colsHeaders';
+import { columns, constructRows, rows } from './colsHeaders';
 import ErrorMessage from './errorMessage';
 
 const POLLING_FREQ_MS = 5000;
 
 export const loader = async () => {
-  return json([
-    {
-      id: 1,
-      url: 'My First Post',
-      taskId: 1,
-      dagId: 2,
-      executionDate: 'some string'
-    },
-    {
-      id: 2,
-      url: 'My Second Post',
-      taskId: 1,
-      dagId: 2,
-      executionDate: 'some string'
-    }
-  ]);
+  const submissionsUrl = `api/v0/claims`;
+
+  const results = await api(submissionsUrl, { method: 'GET' });
+
+  const resultsJSON = await results.json();
+
+  return json(resultsJSON);
 };
 
-const BillingResults = () => {
+const BillingResults = async data => {
   const title = 'Billing Results Overview';
   const summary =
     'Overview of pulling data from Airflow. Perhaps some instructions can go here.';
@@ -45,17 +36,24 @@ const BillingResults = () => {
   //   // we'll need to store the dag run in state and update the corresponding dag run
   //   // in state with the response data from this poller
   // }, POLLING_FREQ_MS);
+
   // data
   const airflowData = useLoaderData();
-  console.log(airflowData);
+  console.log({ airflowData });
 
   const handleErrorTest = () => {
     const err = new Error('Error test!');
     setError(err);
   };
 
+  const handleClearError = () => {
+    setError(null);
+  };
+
+  const constructedRows = constructRows(data);
+
   return error ? (
-    ErrorMessage(error)
+    ErrorMessage({ error, handleClear: handleClearError })
   ) : (
     <>
       <div style={{ textAlign: 'center' }}>
@@ -68,7 +66,9 @@ const BillingResults = () => {
           {title}
         </Typography>
         <Button
+          variant='contained'
           sx={{
+            margin: '0 3rem',
             color: 'red'
           }}
           onClick={handleErrorTest}
@@ -87,7 +87,7 @@ const BillingResults = () => {
 
       <div style={{ height: '60rem', width: '100%' }}>
         <DataGrid
-          rows={rows}
+          rows={constructedRows}
           columns={columns}
           pageSize={25}
           checkboxSelection

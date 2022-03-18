@@ -1,6 +1,9 @@
 import { GridColDef } from '@mui/x-data-grid';
 import generateLink, { isSuccessful } from './lib';
 
+/**
+ * @deprecated - this was just a baseline for rendering dummy data - keeping Row and rows for the time being for local static content rendering
+ */
 interface Row {
   id: number;
   taskId: number;
@@ -14,6 +17,24 @@ interface Row {
   logs: any; // url
 }
 
+/**
+ * Shape of data based on `api/v0/submissions` endpoint 
+ * {
+    "id": 0,
+    "billingCycle": "string",
+    "billingType": "chronic",
+    "client": "string",
+    "limit": 0,
+    "insurerId": 0,
+    "mode": "submission",
+    "partnership": "string",
+    "dagState": "string",
+    "dagName": "string",
+    "dagRunId": "string",
+    "submissionDatetime": "2022-03-18T02:29:00.467Z"
+  }
+ */
+
 const columns: Array<GridColDef> = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
@@ -24,7 +45,7 @@ const columns: Array<GridColDef> = [
     editable: true
   },
   {
-    field: 'dagId',
+    field: 'dagRunId',
     headerName: 'Dag Id',
     type: 'number',
     width: 200,
@@ -83,6 +104,31 @@ const columns: Array<GridColDef> = [
     renderCell: param => generateLink(param)
   }
 ];
+
+const constructRows = rows => {
+  const result = rows.map(row => {
+    return {
+      id: row.id,
+      taskId: 10,
+      dagId: row.dagRunId,
+      jobName: row.dagName,
+      status: 'in progress',
+      // didn't see this as part in the Swagger docs but keeping for the time being
+      totals: 1200000,
+      executionDate: row.submissionDatetime,
+      billingCycle: row.billingCycle,
+      success: isSuccessful('total'),
+      logs: 'islandhomeparadise@scam.com'
+    };
+  });
+
+  return result;
+};
+
+/**
+ *  @deprecated - this was always meant to be dummy data and a reference for using some of the row logic
+ *
+ */
 
 const rows: Array<Row> = [
   {
@@ -183,4 +229,4 @@ const rows: Array<Row> = [
   }
 ];
 
-export { columns, rows };
+export { columns, constructRows, rows };

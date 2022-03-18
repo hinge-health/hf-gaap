@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 
 const renderErrorName = (name: Error['name']) => {
   return (
@@ -19,7 +19,13 @@ const renderErrorStack = (stack: Error['stack']) => {
   );
 };
 
-const ErrorMessage = (error: Error) => {
+const ErrorMessage = ({
+  error,
+  handleClear
+}: {
+  error: Error;
+  handleClear: () => unknown;
+}) => {
   const errHeader = 'Error getting Billing results';
   return (
     <>
@@ -31,6 +37,8 @@ const ErrorMessage = (error: Error) => {
       >
         {errHeader}
       </Typography>
+
+      <Button></Button>
 
       {error.name && renderErrorName(error.name)}
 
