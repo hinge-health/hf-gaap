@@ -2,7 +2,7 @@ import { GridRenderCellParams } from '@mui/x-data-grid';
 import { Link } from '@mui/material';
 
 const generateLink = (param: GridRenderCellParams) => {
-  return <Link href={'https://github.com/'}>{param.row.logs}</Link>;
+  return <Link target='blank' href={`http://localhost:8082/tree?dag_id=${param.row.dagName}`}>Logs</Link>;
 };
 
 export const isSuccessful = (total: string): boolean => {
