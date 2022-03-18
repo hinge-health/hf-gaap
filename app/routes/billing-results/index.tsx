@@ -7,6 +7,7 @@ import { Typography, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { columns, rows } from './colsHeaders';
 import ErrorMessage from './errorMessage';
+import { Link } from '@mui/material';
 
 const POLLING_FREQ_MS = 5000;
 

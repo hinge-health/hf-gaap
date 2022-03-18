@@ -20,7 +20,7 @@ const columns: Array<GridColDef> = [
     field: 'dagRunId',
     headerName: 'Task Id',
     type: 'string',
-    width: 100,
+    width: 200,
     editable: true
   },
   {
@@ -53,19 +53,19 @@ const columns: Array<GridColDef> = [
     width: 120,
     description: `transaction status to either be 'in progress' or 'completed'`
   },
-  // {
-  //   field: 'totals',
-  //   headerName: 'Totals',
-  //   sortable: false,
-  //   type: 'number',
-  //   width: 150,
-  //   valueFormatter: params => {
-  //     return params.value.toLocaleString('en-US', {
-  //       style: 'currency',
-  //       currency: 'USD'
-  //     });
-  //   }
-  // },
+  {
+    field: 'totals',
+    headerName: 'Totals',
+    sortable: false,
+    type: 'number',
+    width: 150,
+    // valueFormatter: params => {
+    //   return params.value.toLocaleString('en-US', {
+    //     style: 'currency',
+    //     currency: 'USD'
+    //   });
+    // }
+  },
   {
     field: 'submissionDatetime',
     headerName: 'Execution Date',
@@ -75,12 +75,12 @@ const columns: Array<GridColDef> = [
   {
     field: 'billingCycle',
     headerName: 'Billing Cycle',
-    width: 150
+    width: 50
   },
   {
     field: 'billingType',
     headerName: 'Billing Type',
-    width: 150
+    width: 50
   }, 
   {
     field: 'success',
