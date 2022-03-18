@@ -11,22 +11,11 @@ import ErrorMessage from './errorMessage';
 const POLLING_FREQ_MS = 5000;
 
 export const loader = async () => {
-  return json([
-    {
-      id: 1,
-      url: 'My First Post',
-      taskId: 1,
-      dagId: 2,
-      executionDate: 'some string'
-    },
-    {
-      id: 2,
-      url: 'My Second Post',
-      taskId: 1,
-      dagId: 2,
-      executionDate: 'some string'
-    }
-  ]);
+  const dagRunsReq = await api('api/v0/submissions', {
+    method: 'GET'
+  });
+  const dagRuns = await dagRunsReq.json();
+  return dagRuns; 
 };
 
 const BillingResults = () => {
@@ -87,7 +76,7 @@ const BillingResults = () => {
 
       <div style={{ height: '60rem', width: '100%' }}>
         <DataGrid
-          rows={rows}
+          rows={airflowData}
           columns={columns}
           pageSize={25}
           checkboxSelection

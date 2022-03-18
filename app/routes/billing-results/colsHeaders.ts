@@ -17,48 +17,57 @@ interface Row {
 const columns: Array<GridColDef> = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
-    field: 'taskId',
+    field: 'dagRunId',
     headerName: 'Task Id',
-    type: 'number',
-    width: 70,
+    type: 'string',
+    width: 100,
     editable: true
   },
   {
-    field: 'dagId',
+    field: 'dagName',
     headerName: 'Dag Id',
-    type: 'number',
+    type: 'string',
     width: 200,
     editable: true,
     description: `Airflow's dagId`
   },
   {
-    field: 'jobName',
-    headerName: 'Job Name',
+    field: 'client',
+    headerName: 'Client',
+    type: 'string',
     width: 200,
-    editable: true
+    editable: true,
+    description: `Airflow's dagId`
   },
-
   {
-    field: 'status',
+    field: 'partnership',
+    headerName: 'Partnership',
+    type: 'string',
+    width: 200,
+    editable: true,
+    description: `Airflow's dagId`
+  },
+  {
+    field: 'dagState',
     headerName: 'Status',
     width: 120,
     description: `transaction status to either be 'in progress' or 'completed'`
   },
+  // {
+  //   field: 'totals',
+  //   headerName: 'Totals',
+  //   sortable: false,
+  //   type: 'number',
+  //   width: 150,
+  //   valueFormatter: params => {
+  //     return params.value.toLocaleString('en-US', {
+  //       style: 'currency',
+  //       currency: 'USD'
+  //     });
+  //   }
+  // },
   {
-    field: 'totals',
-    headerName: 'Totals',
-    sortable: false,
-    type: 'number',
-    width: 150,
-    valueFormatter: params => {
-      return params.value.toLocaleString('en-US', {
-        style: 'currency',
-        currency: 'USD'
-      });
-    }
-  },
-  {
-    field: 'executionDate',
+    field: 'submissionDatetime',
     headerName: 'Execution Date',
     type: 'dateTime',
     width: 250
@@ -68,6 +77,11 @@ const columns: Array<GridColDef> = [
     headerName: 'Billing Cycle',
     width: 150
   },
+  {
+    field: 'billingType',
+    headerName: 'Billing Type',
+    width: 150
+  }, 
   {
     field: 'success',
     headerName: 'Success',
@@ -86,101 +100,21 @@ const columns: Array<GridColDef> = [
 
 const rows: Array<Row> = [
   {
-    id: 1,
-    taskId: 10,
-    dagId: 'fake_paddington_bear_invoices',
-    jobName: 'descriptive_job_name',
-    status: 'in progress',
-    totals: 1200000,
-    executionDate: '3/16/2022, 2:43:22 AM',
-    billingCycle: '2022-03-16',
-    success: isSuccessful('total'),
-    logs: 'islandhomeparadise@scam.com'
+    billingCycle: 'string',
+    billingType: 'chronic',
+    client: 'string',
+    limit: 0,
+    insurerId: 0,
+    mode: 'submission',
+    partnership: 'string',
+    dagState: 'submitted',
+    dagName: 'generate_bills',
+    dagRunId: 'manual__2022-03-18T07:26:48.151853+00:00',
+    id: 9,
+    submissionDatetime: '2022-03-18T07:26:48.204175',
+    report: null
   },
-  {
-    id: 2,
-    taskId: 13,
-    dagId: 'fake_collection_cvs',
-    jobName: 'descriptive_job_name',
-    status: 'complete',
-    totals: 1200000,
-    billingCycle: '2022-03-16',
-    executionDate: '3/16/2022, 2:43:22 AM',
-    success: isSuccessful('total'),
-    logs: 'placeholder@here.com'
-  },
-  {
-    id: 3,
-    taskId: 13,
-    dagId: 'fake_collection_cvs',
-    jobName: 'descriptive_job_name',
-    status: 'in progress',
-    totals: 1500000,
-    billingCycle: '2022-03-16',
-    executionDate: '3/16/2022, 2:43:22 AM',
-    success: isSuccessful('total'),
-    logs: 'placeholder@here.com'
-  },
-  {
-    id: 4,
-    taskId: 13,
-    dagId: 'fake_collection_cvs',
-    jobName: 'descriptive_job_name',
-    status: 'complete',
-    totals: 12000,
-    billingCycle: '2022-03-16',
-    executionDate: '2/16/2022, 2:43:22 AM',
-    success: isSuccessful('total'),
-    logs: 'placeholder@here.com'
-  },
-  {
-    id: 5,
-    taskId: 13,
-    dagId: 'fake_collection_cvs',
-    jobName: 'descriptive_job_name',
-    status: 'complete',
-    totals: 20000,
-    billingCycle: '2022-03-16',
-    executionDate: '3/16/2022, 2:43:22 AM',
-    success: isSuccessful('total'),
-    logs: 'placeholder@here.com'
-  },
-  {
-    id: 6,
-    taskId: 13,
-    dagId: 'fake_collection_cvs',
-    jobName: 'descriptive_job_name',
-    status: 'complete',
-    totals: 19000,
-    billingCycle: '2022-03-16',
-    executionDate: '3/16/2022, 2:43:22 AM',
-    success: isSuccessful('total'),
-    logs: 'placeholder@here.com'
-  },
-  {
-    id: 7,
-    taskId: 13,
-    dagId: 'fake_collection_cvs',
-    jobName: 'descriptive_job_name',
-    status: 'complete',
-    totals: 1200000,
-    billingCycle: '2022-03-16',
-    executionDate: '2/16/2022, 2:43:22 AM',
-    success: isSuccessful('total'),
-    logs: 'placeholder@here.com'
-  },
-  {
-    id: 8,
-    taskId: 13,
-    dagId: 'fake_collection_cvs',
-    jobName: 'descriptive_job_name',
-    status: 'complete',
-    totals: 1200000,
-    billingCycle: '2022-03-16',
-    executionDate: '3/16/2022, 2:43:22 AM',
-    success: isSuccessful('total'),
-    logs: 'placeholder@here.com'
-  }
+
 ];
 
 export { columns, rows };
