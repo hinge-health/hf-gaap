@@ -43,12 +43,15 @@ const columns: Array<GridColDef> = [
     field: 'client',
     headerName: 'Client',
     type: 'string',
+    width: 200,
+    editable: true,
+    description: `Airflow's dagId`
   },
   {
     field: 'unmatched_users',
     headerName: 'Unmatched Users',
     width: 100,
-    // renderCell: param => param.row.report ? param.row.report.unmatched_users : null
+    renderCell: param => param.row.report ? param.row.report.unmatched_users : null
   },
   {
     field: 'matched_users',
@@ -82,15 +85,6 @@ const columns: Array<GridColDef> = [
     field: 'partnership',
     headerName: 'Partnership',
     type: 'string',
->>>>>>> Stashed changes
-    width: 200,
-    editable: true,
-    description: `Airflow's dagId`
-  },
-  {
-    field: 'partnership',
-    headerName: 'Partnership',
-    type: 'string',
     width: 200,
     editable: true,
     description: `Airflow's dagId`
@@ -102,28 +96,7 @@ const columns: Array<GridColDef> = [
     description: `transaction status to either be 'in progress' or 'completed'`
   },
   {
-<<<<<<< Updated upstream
-    field: 'totals',
-    headerName: 'Totals',
-    sortable: false,
-    type: 'number',
-    width: 150,
-    // valueFormatter: params => {
-    //   return params.value.toLocaleString('en-US', {
-    //     style: 'currency',
-    //     currency: 'USD'
-    //   });
-    // }
-  },
-  {
-<<<<<<< Updated upstream
     field: 'submissionDatetime',
-=======
-    field: 'executionDate',
-=======
-    field: 'submissionDatetime',
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     headerName: 'Execution Date',
     type: 'dateTime',
     width: 250
